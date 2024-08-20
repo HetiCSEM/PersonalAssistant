@@ -14,22 +14,22 @@ if st.session_state["authentication_status"]:
 
     if "openai_model" not in st.session_state:
         st.session_state["openai_model"] = None
-        
+
     if "messages" not in st.session_state:
         st.session_state.messages = []
-        
 
     with st.sidebar:
         col1, col2 = st.columns([3, 1])
         with col1:
             st.subheader("Clear Chat")
         with col2:
-            st.button('🔄', on_click=reset_conversation)
+            st.button("🔄", on_click=reset_conversation)
         st.title("Configuration")
-        
+
         st.session_state["openai_model"] = st.selectbox(
             "Select a model",
             [
+                "gpt-4o",
                 "gpt-4-turbo-preview",
                 "gpt-3.5-turbo",
                 "gpt-4",
@@ -45,7 +45,10 @@ if st.session_state["authentication_status"]:
         with st.chat_message("user", avatar="🙂"):
             st.markdown(prompt)
 
-        with st.chat_message("assistant", avatar="https://static-00.iconduck.com/assets.00/openai-icon-2021x2048-4rpe5x7n.png"):
+        with st.chat_message(
+            "assistant",
+            avatar="https://static-00.iconduck.com/assets.00/openai-icon-2021x2048-4rpe5x7n.png",
+        ):
             stream = client.chat.completions.create(
                 model=st.session_state["openai_model"],
                 messages=[
@@ -56,6 +59,6 @@ if st.session_state["authentication_status"]:
             )
             response = st.write_stream(stream)
         st.session_state.messages.append({"role": "assistant", "content": response})
-        
+
 elif st.session_state["authentication_status"] is False:
     st.error("Username/password is incorrect")
